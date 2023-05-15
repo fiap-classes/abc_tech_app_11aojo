@@ -7,12 +7,15 @@ import 'package:get/get.dart';
 class HomePage extends GetView<AssistanceController> {
   const HomePage({super.key});
 
-  Widget _renderAssists(List<Assist> assists) {
+  Widget _renderAssists(BuildContext context, List<Assist> assists) {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: assists.length,
-        itemBuilder: (context, index) =>
-            ListTile(title: Text(assists[index].title)));
+        itemBuilder: (context, index) => ListTile(
+            selectedColor: context.theme.highlightColor,
+            selected: controller.isSelected(index),
+            title: Text(assists[index].title),
+            onTap: () => controller.selectAssist(index)));
   }
 
   @override
@@ -35,15 +38,7 @@ class HomePage extends GetView<AssistanceController> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                        child: TextButton(
-                            onPressed: controller.getAssistanceList,
-                            child: const Text("Carregar")))
-                  ],
-                ),
-                controller.obx((state) => _renderAssists(state ?? []),
+                controller.obx((state) => _renderAssists(context, state ?? []),
                     onLoading: const CircularProgressIndicator(),
                     onEmpty: const Text("Nenhum serviço disponível"),
                     onError: (error) => Text(error.toString()))
